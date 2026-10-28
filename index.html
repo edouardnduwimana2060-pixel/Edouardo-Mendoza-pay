@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Édouardo~Mendoza Pay</title>
+<style>
+:root {
+  --bg: #06140f;
+  --panel: #0b1d15;
+  --line: #294235;
+  --gold: #e6c547;
+  --muted: #a5b8ad;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 20px;
+  background: #091810;
+  border-bottom: 1px solid var(--line);
+  font-size: 23px;
+  font-weight: bold;
+}
+header span, h2 { color: var(--gold); }
+main {
+  max-width: 650px;
+  margin: auto;
+  padding: 18px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 18px 0;
+}
+p { line-height: 1.6; }
+.muted { color: var(--muted); }
+button, .btn {
+  display: inline-block;
+  background: var(--gold);
+  color: #111;
+  border: none;
+  border-radius: 9px;
+  padding: 13px 18px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 5px 4px 5px 0;
+}
+input, select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 14px;
+  background: #10251b;
+  color: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+label { color: var(--muted); }
+.notice {
+  background: #211f0f;
+  border: 1px solid #8d7623;
+  padding: 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+<header>Édouardo~Mendoza <span>Pay</span></header>
+
+<main>
+<section class="card">
+<h2>Bienvenue sur Édouardo~Mendoza Pay</h2>
+<p class="muted">
+Une plateforme de démonstration pour découvrir
+les services de paiement et les demandes de vérification.
+</p>
+<div class="notice">
+<strong>Mode démonstration :</strong>
+aucun paiement réel n'est effectué. N'envoyez pas de vrais
+documents d'identité ni de données bancaires.
+</div>
+</section>
+
+<section class="card">
+<h2>Créer un compte</h2>
+<p class="muted">Formulaire de démonstration.</p>
+
+<form id="form">
+<label>Nom complet</label>
+<input id="nom" required maxlength="100"
+placeholder="Votre nom complet">
+
+<label>Email</label>
+<input id="email" type="email" required
+placeholder="exemple@email.com">
+
+<label>Téléphone</label>
+<input id="telephone" type="tel" required
+placeholder="+257...">
+
+<label>Pays</label>
+<select id="pays">
+<option>Burundi</option>
+<option>Rwanda</option>
+<option>République démocratique du Congo</option>
+<option>Tanzanie</option>
+<option>Kenya</option>
+<option>Autre</option>
+</select>
+
+<label>Type de document (test uniquement)</label>
+<select id="document">
+<option>Carte nationale d'identité</option>
+<option>Passeport</option>
+<option>Autre document autorisé</option>
+</select>
+
+<p class="notice">
+Utilisez uniquement des informations fictives.
+Ce formulaire ne transmet aucune donnée à un serveur.
+</p>
+
+<label>
+<input id="accord" type="checkbox" required
+style="display:inline;width:auto">
+J'accepte le mode démonstration.
+</label>
+
+<button type="submit">Envoyer la demande de test</button>
+</form>
+
+<p id="message" class="muted"></p>
+</section>
+
+<section class="card">
+<h2>Nos services</h2>
+<p>• Création de compte de démonstration</p>
+<p>• Présentation des services de paiement</p>
+<p>• Demande de vérification de démonstration</p>
+</section>
+
+<section class="card">
+<h2>Contact</h2>
+<p class="muted">Contactez-nous sur WhatsApp.</p>
+<a class="btn"
+href="https://wa.me/25766048115"
+target="_blank" rel="noopener">
+Contacter sur WhatsApp
+</a>
+<br>
+<a class="btn"
+href="https://chat.whatsapp.com/J5dYxe2PqOo7K46lPFf00r?s=cl&p=a&mlu=4&ilr=4&iam=2"
+target="_blank" rel="noopener">
+Rejoindre notre communauté
+</a>
+</section>
+</main>
+
+<footer>
+© 2026 Édouardo~Mendoza Pay — Démonstration
+</footer>
+
+<script>
+document.getElementById("form").addEventListener("submit",
+function(event) {
+  event.preventDefault();
+
+  if (!document.getElementById("accord").checked) {
+    return;
+  }
+
+  document.getElementById("message").textContent =
+    "Votre demande de démonstration a été enregistrée pour cette session. Aucune donnée n'a été envoyée au serveur.";
+
+  this.reset();
+});
+</script>
+</body>
+  </html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administration — Édouardo~Mendoza Pay</title>
+
+<style>
+:root {
+  --bg: #06140f;
+  --panel: #0b1d15;
+  --line: #294235;
+  --gold: #e6c547;
+  --muted: #a5b8ad;
+}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #091810;
+  padding: 20px;
+  font-size: 21px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--line);
+}
+
+header span, h2 { color: var(--gold); }
+
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 16px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  margin: 16px 0;
+}
+
+.muted { color: var(--muted); line-height: 1.5; }
+
+.notice {
+  background: #211f0f;
+  border: 1px solid #8d7623;
+  padding: 12px;
+  border-radius: 9px;
+  color: #f0d975;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  background: #10251b;
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+  font-size: 24px;
+  color: var(--gold);
+  margin-top: 8px;
+}
+
+button, .btn {
+  display: inline-block;
+  padding: 11px 14px;
+  margin: 5px 4px 5px 0;
+  border: 0;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  background: var(--gold);
+  color: #111;
+}
+
+.reject { background: #b94c4c; color: white; }
+.pending { background: #52695b; color: white; }
+
+.request {
+  background: #10251b;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #52695b;
+  font-size: 12px;
+}
+
+.empty {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+}
+
+@media(max-width:480px) {
+  .stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+<header>Édouardo~Mendoza <span>Pay</span> — Admin</header>
+
+<main>
+  <section class="card">
+    <h2>Panneau d'administration</h2>
+    <p class="muted">
+      Gestion des demandes de démonstration.
+    </p>
+
+    <div class="notice">
+      <strong>Attention :</strong> cette page est une démonstration.
+      Elle n'est pas protégée par une connexion administrateur et
+      affiche uniquement les demandes enregistrées dans le navigateur
+      actuel. N'utilisez pas de vrais documents ni de données personnelles.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Résumé des demandes</h2>
+
+    <div class="stats">
+      <div class="stat">
+        Total
+        <strong id="total">0</strong>
+      </div>
+      <div class="stat">
+        En attente
+        <strong id="waiting">0</strong>
+      </div>
+      <div class="stat">
+        Approuvées
+        <strong id="approved">0</strong>
+      </div>
+    </div>
+
+    <button onclick="render()">Actualiser</button>
+    <button class="reject" onclick="clearDemo()">Effacer les données de démonstration</button>
+  </section>
+
+  <section class="card">
+    <h2>Demandes KYC de démonstration</h2>
+    <div id="requests"></div>
+  </section>
+
+  <a class="btn" href="index.html">Retour à l'accueil</a>
+</main>
+
+<script>
+const STORAGE_KEY = "ghb_kyc_demo_requests";
+
+function getRequests() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch (error) {
+    return [];
+  }
+}
+
+function updateStatus(id, status) {
+  const requests = getRequests();
+  const item = requests.find(r => String(r.id) === String(id));
+
+  if (!item) {
+    alert("Demande introuvable dans ce navigateur.");
+    return;
+  }
+
+  item.s = status;
+  item.reason = "";
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+  render();
+}
+
+function render() {
+  const requests = getRequests();
+
+  document.getElementById("total").textContent = requests.length;
+  document.getElementById("waiting").textContent =
+    requests.filter(r => r.s === "En attente").length;
+  document.getElementById("approved").textContent =
+    requests.filter(r => r.s === "Approuvée").length;
+
+  const container = document.getElementById("requests");
+
+  if (!requests.length) {
+    container.innerHTML =
+      '<div class="empty">Aucune demande de démonstration dans ce navigateur.</div>';
+    return;
+  }
+
+  container.replaceChildren();
+
+  requests.slice().reverse().forEach(r => {
+    const box = document.createElement("div");
+    box.className = "request";
+
+    const title = document.createElement("h3");
+    title.textContent = r.n || "Sans nom";
+    box.appendChild(title);
+
+    const details = document.createElement("p");
+    details.className = "muted";
+    details.textContent =
+      "Référence : " + r.id +
+      "\nEmail : " + (r.e || "") +
+      "\nTéléphone : " + (r.p || "") +
+      "\nPays : " + (r.c || "") +
+      "\nDocument : " + (r.t || "") +
+      "\nDate : " + (r.date || "");
+    details.style.whiteSpace = "pre-line";
+    box.appendChild(details);
+
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = "Statut : " + (r.s || "En attente");
+    box.appendChild(badge);
+
+    const actions = document.createElement("div");
+
+    [
+      ["Approuver", "Approuvée", ""],
+      ["Rejeter", "Rejetée", "reject"],
+      ["En attente", "En attente", "pending"]
+    ].forEach(([label, status, cls]) => {
+      const button = document.createElement("button");
+      button.textContent = label;
+      if (cls) button.className = cls;
+      button.addEventListener("click", () => updateStatus(r.id, status));
+      actions.appendChild(button);
+    });
+
+    box.appendChild(actions);
+    container.appendChild(box);
+  });
+}
+
+function clearDemo() {
+  if (!confirm("Effacer toutes les demandes de démonstration de ce navigateur ?")) {
+    return;
+  }
+
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+}
+
+render();
+</script>
+</body>
+  </html>
